@@ -2,62 +2,55 @@
 
 #define MAXLINE 80 /* maximum input line size */
 
-void printinput(char s[], int length);
 int readline(char s[], int maxline);
 int palindrome(char s[], int length);
 
 int main(void) {
   char s[MAXLINE];
-  int res, length;
+  int length;
 
   printf("Welcome to the all-mighty palindrome detector!\n");
   printf("Please provide input:\n");
 
   length = readline(s, MAXLINE);
 
-  printinput(s, length);
+  printf("Input is: '%s'\n", s);
 
-  res = palindrome(s, length);
-
-  printf("Result it: %d\n", res);
-
-  return res;
+  return palindrome(s, length);
 }
 
 int palindrome(char s[], int length) {
-  int i;
+  /* Using pointers to track start and end */
+  char *start = s;
+  char *end = s + length - 1;
 
-  for (i = 0; i < length / 2; ++i) {
-    if (s[i] != s[length - i - 2]) return 0;
+  while (start < end) {
+    /* Skip spaces or tabs either from start or end */
+    if (*start == ' ' || *start == '\t') {
+      start++;
+      continue;
+    }
+    if (*end == ' ' || *end == '\t') {
+      end--;
+      continue;
+    }
+
+    /* Check if it's not a palindrome to exit early */
+    if (*start != *end) return 0;
+    
+    /* Move pointers closer */
+    start++;
+    end--;
   }
 
   return 1;
 }
 
-void printinput(char s[], int length) {
-  int i;
-
-  printf("Input string is: ");
-
-  for (i = 0; i < length - 1; ++i) {
-    printf("%c", s[i]);
-  }
-
-  printf("\n");
-}
-
 int readline(char s[], int maxline) {
   int c, i;
 
-  for (i = 0; i < maxline - 1 && (c = getchar()) != EOF && c != '\n'; ++i)
-    if (c != '\t' && c != ' ')
-      s[i] = c;
-    else --i;
-
-  if (c == '\n') {
+  for (i = 0; i < maxline - 1 && (c = getchar()) != EOF && c != '\n'; i++)
     s[i] = c;
-    ++i;
-  }
 
   s[i] = '\0';
 
